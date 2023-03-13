@@ -1,14 +1,9 @@
-# Increse the request's limit
-
-# Increse ulimit value
-exec { 'fix-config-nginx':
-  onlyif  => 'test -e /etc/default/nginx',
-  command => 'sed -i "5s/[0-9]\+/$( ulimit -n )/" /etc/default/nginx',
-  path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+#0-the_sky_is_the_limit_not.pp set open file limit higher
+exec { 'set limit to 2000':
+  path    => '/bin',
+  command => "sed -i 's/15/2000/' /etc/default/nginx"
+}
+exec { 'reboot nginx':
+  command => '/usr/sbin/service nginx restart'
 }
 
-# Restart nginex service
-exec { 'nginx-restart':
-  command => 'nginx restart',
-  path    => '/etc/init.d/'
-}
